@@ -1,0 +1,926 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Community - Ahangama</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- <script src="/_sdk/element_sdk.js"></script> REMOVED CANVA SDK -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700&amp;family=Inter:wght@300;400;500;600&amp;display=swap"
+    rel="stylesheet">
+  <style>
+    body {
+      box-sizing: border-box;
+    }
+
+    .font-display {
+      font-family: 'Playfair Display', serif;
+    }
+
+    .font-body {
+      font-family: 'Inter', sans-serif;
+    }
+
+    .menu-card:hover {
+      transform: translateY(-4px);
+    }
+
+    .category-btn.active {
+      background-color: #78716c;
+      color: white;
+    }
+
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
+        transform: translateY(10px);
+      }
+
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .animate-fade-in {
+      animation: fadeIn 0.5s ease-out forwards;
+    }
+
+    .cart-bounce {
+      animation: bounce 0.3s ease-out;
+    }
+
+    /* Sticky Bar dynamic styles */
+    #category-filter.stuck {
+      background-color: #faf9f5;
+      /* Matches bg-stone-50 precisely */
+      backdrop-filter: blur(8px);
+      box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+      border-bottom: 1px solid #e7e5e4;
+      padding-top: 1rem;
+      padding-bottom: 1rem;
+    }
+
+    @keyframes bounce {
+
+      0%,
+      100% {
+        transform: scale(1);
+      }
+
+      50% {
+        transform: scale(1.2);
+      }
+    }
+  </style>
+  <style>
+    @view-transition {
+      navigation: auto;
+    }
+  </style>
+  <!-- <script src="/_sdk/data_sdk.js" type="text/javascript"></script> REMOVED CANVA SDK -->
+</head>
+
+<body class="font-body bg-stone-50 text-stone-800">
+  <div id="app"> <!-- Navigation -->
+    <nav class="fixed top-0 left-0 right-0 bg-white/95 backdrop-blur-sm shadow-sm z-50">
+      <div class="max-w-6xl mx-auto px-4 py-3 flex items-center justify-between"><a href="#"
+          class="font-display text-xl font-semibold text-stone-800" id="nav-logo">Ahangama Cafe</a>
+        <div class="flex items-center gap-6"><a href="#menu"
+            class="text-sm text-stone-600 hover:text-stone-800 transition-colors hidden sm:block">Menu</a> <a
+            href="#delivery"
+            class="text-sm text-stone-600 hover:text-stone-800 transition-colors hidden sm:block">Delivery</a> <a
+            href="#contact"
+            class="text-sm text-stone-600 hover:text-stone-800 transition-colors hidden sm:block">Contact</a> <button
+            id="cart-btn" onclick="toggleCart()"
+            class="relative p-2 text-stone-600 hover:text-stone-800 transition-colors">
+            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewbox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z" />
+            </svg><span id="cart-count"
+              class="absolute -top-1 -right-1 bg-amber-500 text-white text-xs w-5 h-5 rounded-full flex items-center justify-center font-medium hidden">0</span>
+          </button>
+        </div>
+      </div>
+    </nav><!-- Hero Section -->
+    <section class="relative pt-20 pb-16 bg-gradient-to-br from-stone-100 via-amber-50 to-stone-100">
+      <div class="max-w-6xl mx-auto px-4 py-12 md:py-20">
+        <div class="grid md:grid-cols-2 gap-8 items-center">
+          <div class="text-center md:text-left"><span
+              class="inline-block px-4 py-1 bg-amber-100 text-amber-700 rounded-full text-sm font-medium mb-4">🛵
+              Delivery Available</span>
+            <h1 id="hero-title"
+              class="font-display text-4xl md:text-5xl lg:text-6xl font-bold text-stone-800 mb-4 leading-tight">
+              Delicious Food,<br>
+              Delivered Fresh</h1>
+            <p id="hero-subtitle" class="text-lg text-stone-600 mb-8 max-w-md mx-auto md:mx-0">Your favorite dishes —
+              affordable, just as delicious, and delivered to your door</p>
+            <div class="flex flex-col sm:flex-row gap-4 justify-center md:justify-start"><button id="hero-cta"
+                onclick="openOrderModal()"
+                class="px-8 py-4 bg-stone-800 text-white rounded-full font-medium hover:bg-stone-700 transition-all hover:shadow-lg flex items-center justify-center gap-2">
+                <svg class="w-5 h-5" fill="currentColor" viewbox="0 0 24 24">
+                  <path
+                    d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z" />
+                </svg> Order via WhatsApp </button> <a href="#menu"
+                class="px-8 py-4 border-2 border-stone-300 text-stone-700 rounded-full font-medium hover:border-stone-400 hover:bg-white transition-all flex items-center justify-center gap-2">
+                View Menu </a>
+            </div>
+          </div>
+          <div class="relative hidden md:block">
+            <div
+              class="aspect-square bg-gradient-to-br from-amber-200 to-amber-100 rounded-full absolute -top-8 -right-8 w-72 opacity-50">
+            </div>
+            <div
+              class="relative bg-white rounded-3xl shadow-2xl p-6 transform rotate-3 hover:rotate-0 transition-transform duration-500">
+              <div class="aspect-video rounded-2xl overflow-hidden flex items-center justify-center">
+                <img src="./images/Chicken bowl.JPG" alt="Chicken Bowl" class="w-full h-full object-cover">
+              </div>
+              <div class="mt-4 text-center">
+                <p class="font-display text-xl font-semibold">Fresh &amp; Delicious</p>
+                <p class="text-stone-500 text-sm">Made with love</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section><!-- Menu Section (Moved here, before How Delivery Works) -->
+    <section id="menu" class="py-16 bg-white scroll-mt-20">
+      <div class="max-w-6xl mx-auto px-4">
+        <div class="text-center mb-12"><span
+            class="inline-block px-4 py-1 bg-stone-100 text-stone-600 rounded-full text-sm font-medium mb-4">📋 Our
+            Menu</span>
+          <h2 class="font-display text-3xl md:text-4xl font-bold text-stone-800 mb-4">What We Offer</h2>
+          <p class="text-stone-600 max-w-2xl mx-auto">Fresh ingredients, authentic recipes, and flavors that will
+            transport you to Sri Lanka.</p>
+        </div><!-- Category Filter Sentinel -->
+        <div id="menu-sentinel" class="h-px w-full"></div>
+        <!-- Category Filter -->
+        <div class="sticky top-16 z-40 transition-all duration-300 -mx-4 px-4 mb-8 flex flex-wrap justify-center gap-2"
+          id="category-filter">
+          <!-- Categories will be rendered here -->
+        </div><!-- Menu Grid -->
+        <div id="menu-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+          <!-- Menu items will be rendered here -->
+        </div>
+      </div>
+    </section><!-- How Delivery Works -->
+    <section class="py-16 bg-stone-50">
+      <div class="max-w-6xl mx-auto px-4">
+        <div class="text-center mb-12"><span
+            class="inline-block px-4 py-1 bg-amber-100 text-amber-700 rounded-full text-sm font-medium mb-4">📦 How It
+            Works</span>
+          <h2 class="font-display text-3xl md:text-4xl font-bold text-stone-800">Simple WhatsApp Ordering</h2>
+        </div>
+        <div class="grid md:grid-cols-3 gap-8">
+          <div class="text-center p-6">
+            <div class="w-16 h-16 bg-amber-100 rounded-full flex items-center justify-center mx-auto mb-4"><span
+                class="text-2xl">📱</span>
+            </div>
+            <h3 class="font-display text-xl font-semibold mb-2">1. Browse Menu</h3>
+            <p class="text-stone-600">Explore our delicious offerings and add items to your cart</p>
+          </div>
+          <div class="text-center p-6">
+            <div class="w-16 h-16 bg-amber-100 rounded-full flex items-center justify-center mx-auto mb-4"><span
+                class="text-2xl">💬</span>
+            </div>
+            <h3 class="font-display text-xl font-semibold mb-2">2. Send Order</h3>
+            <p class="text-stone-600">Share your details and send your order directly via WhatsApp</p>
+          </div>
+          <div class="text-center p-6">
+            <div class="w-16 h-16 bg-amber-100 rounded-full flex items-center justify-center mx-auto mb-4"><span
+                class="text-2xl">🛵</span>
+            </div>
+            <h3 class="font-display text-xl font-semibold mb-2">3. Get Delivered</h3>
+            <p class="text-stone-600">We'll confirm and deliver fresh food to your doorstep</p>
+          </div>
+        </div>
+      </div>
+    </section><!-- Delivery Info -->
+    <section id="delivery" class="py-16 bg-gradient-to-br from-stone-800 to-stone-900 text-white">
+      <div class="max-w-6xl mx-auto px-4">
+        <div class="grid md:grid-cols-2 gap-12 items-center">
+          <div><span
+              class="inline-block px-4 py-1 bg-amber-500/20 text-amber-300 rounded-full text-sm font-medium mb-4">🛵
+              Delivery Info</span>
+            <h2 class="font-display text-3xl md:text-4xl font-bold mb-6">Delivery Details</h2>
+            <div class="space-y-4">
+              <div class="flex items-start gap-4">
+                <div class="w-10 h-10 bg-stone-700 rounded-lg flex items-center justify-center flex-shrink-0">
+                  <span>📍</span>
+                </div>
+                <div>
+                  <h4 class="font-semibold mb-1">Delivery Area</h4>
+                  <p class="text-stone-400">Ahangama, Koggala, Midigama, Weligama and surrounding areas (up to 10 km)
+                  </p>
+                </div>
+              </div>
+              <div class="flex items-start gap-4">
+                <div class="w-10 h-10 bg-stone-700 rounded-lg flex items-center justify-center flex-shrink-0">
+                  <span>⏰</span>
+                </div>
+                <div>
+                  <h4 class="font-semibold mb-1">Delivery Hours</h4>
+                  <p class="text-stone-400">Daily: 10:00 AM - 9:00 PM</p>
+                </div>
+              </div>
+              <div class="flex items-start gap-4">
+                <div class="w-10 h-10 bg-stone-700 rounded-lg flex items-center justify-center flex-shrink-0">
+                  <span></span>
+                </div>
+                <div>
+                  <h4 class="font-semibold mb-1">Delivery Fee</h4>
+                  <p class="text-stone-400">Free delivery on orders above LKR 9,000. Otherwise LKR 300–700 based on
+                    distance.</p>
+                </div>
+              </div>
+              <div class="flex items-start gap-4">
+                <div class="w-10 h-10 bg-stone-700 rounded-lg flex items-center justify-center flex-shrink-0">
+                  <span>💳</span>
+                </div>
+                <div>
+                  <h4 class="font-semibold mb-1">Payment</h4>
+                  <p class="text-stone-400">Cash on delivery or bank transfer</p>
+                </div>
+              </div>
+            </div>
+          </div>
+          <a href="https://www.google.com/maps/search/?api=1&query=Community+Cafe+Ahangama" target="_blank"
+            class="block bg-stone-700/50 rounded-3xl p-4 backdrop-blur hover:bg-stone-700/70 transition-colors group">
+            <div class="aspect-video w-full rounded-2xl overflow-hidden mb-4 relative">
+              <img src="./images/Community-map.png" alt="Delivery Map" class="w-full h-full object-cover">
+              <div
+                class="absolute inset-0 bg-black/20 group-hover:bg-black/10 transition-colors flex items-center justify-center">
+                <span
+                  class="bg-white/90 text-stone-800 px-4 py-2 rounded-full text-sm font-medium shadow-lg scale-95 group-hover:scale-100 transition-transform">View
+                  on Google Maps</span>
+              </div>
+            </div>
+            <p class="text-center text-stone-400 text-sm">Click to view our location on Google Maps</p>
+          </a>
+        </div>
+      </div>
+    </section><!-- CTA Section -->
+    <section class="py-16 bg-amber-50">
+      <div class="max-w-4xl mx-auto px-4 text-center"><span
+          class="inline-block px-4 py-1 bg-amber-100 text-amber-700 rounded-full text-sm font-medium mb-4">🍽️ Ready to
+          Order?</span>
+        <h2 class="font-display text-3xl md:text-4xl font-bold text-stone-800 mb-4">Hungry? Let's Get You Fed!</h2>
+        <p class="text-stone-600 mb-8 max-w-2xl mx-auto">Browse our menu, add your favorites to cart, and send your
+          order via WhatsApp. We'll have it delivered fresh to your door.</p><button onclick="openOrderModal()"
+          class="px-8 py-4 bg-green-600 text-white rounded-full font-medium hover:bg-green-700 transition-all hover:shadow-lg inline-flex items-center gap-2">
+          <svg class="w-6 h-6" fill="currentColor" viewbox="0 0 24 24">
+            <path
+              d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z" />
+          </svg> Order via WhatsApp </button>
+      </div>
+    </section><!-- Contact Section -->
+    <section id="contact" class="py-16 bg-white">
+      <div class="max-w-6xl mx-auto px-4">
+        <div class="text-center mb-12"><span
+            class="inline-block px-4 py-1 bg-stone-100 text-stone-600 rounded-full text-sm font-medium mb-4">📞 Contact
+            Us</span>
+          <h2 class="font-display text-3xl md:text-4xl font-bold text-stone-800">Get In Touch</h2>
+        </div>
+        <div class="grid md:grid-cols-3 gap-8 max-w-4xl mx-auto">
+          <div class="text-center p-6 bg-stone-50 rounded-2xl">
+            <div class="w-12 h-12 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4"><span
+                class="text-xl">💬</span>
+            </div>
+            <h3 class="font-semibold mb-2">WhatsApp</h3>
+            <p id="contact-whatsapp" class="text-stone-600">+94 76 755 9563</p>
+          </div>
+          <div class="text-center p-6 bg-stone-50 rounded-2xl">
+            <div class="w-12 h-12 bg-amber-100 rounded-full flex items-center justify-center mx-auto mb-4"><span
+                class="text-xl">📍</span>
+            </div>
+            <h3 class="font-semibold mb-2">Location</h3>
+            <p class="text-stone-600">Ahangama, Galle<br>
+              Sri Lanka</p>
+          </div>
+          <div class="text-center p-6 bg-stone-50 rounded-2xl">
+            <div class="w-12 h-12 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-4"><span
+                class="text-xl">⏰</span>
+            </div>
+            <h3 class="font-semibold mb-2">Hours</h3>
+            <p class="text-stone-600">Daily<br>
+              10:00 AM - 9:00 PM</p>
+          </div>
+        </div>
+      </div>
+    </section><!-- Footer -->
+    <footer class="py-8 bg-stone-900 text-stone-400">
+      <div class="max-w-6xl mx-auto px-4 text-center">
+        <p id="footer-name" class="font-display text-xl text-white mb-2">Ahangama Cafe</p>
+        <p class="text-sm">Fresh food delivered with love 🍜</p>
+        <p class="text-xs mt-4">© 2024 All rights reserved</p>
+      </div>
+    </footer><!-- Cart Sidebar -->
+    <div id="cart-sidebar"
+      class="fixed top-0 right-0 h-full w-full sm:w-96 bg-white shadow-2xl transform translate-x-full transition-transform duration-300 z-50">
+      <div class="h-full flex flex-col">
+        <div class="p-4 border-b border-stone-200 flex items-center justify-between">
+          <h3 class="font-display text-xl font-semibold">Your Order</h3><button onclick="toggleCart()"
+            class="p-2 hover:bg-stone-100 rounded-full transition-colors">
+            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewbox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+            </svg></button>
+        </div>
+        <div id="cart-items" class="flex-1 overflow-y-auto p-4"><!-- Cart items will be rendered here -->
+        </div>
+        <div class="p-4 border-t border-stone-200 bg-stone-50">
+          <div class="flex justify-between items-center mb-4"><span class="font-semibold">Total:</span> <span
+              id="cart-total" class="font-display text-2xl font-bold text-amber-600">LKR 0</span>
+          </div><button onclick="openOrderModal()"
+            class="w-full py-3 bg-green-600 text-white rounded-xl font-medium hover:bg-green-700 transition-colors flex items-center justify-center gap-2">
+            <svg class="w-5 h-5" fill="currentColor" viewbox="0 0 24 24">
+              <path
+                d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z" />
+            </svg> Send Order </button>
+          <p class="text-xs text-center text-stone-500 mt-2">Opens WhatsApp to complete your order</p>
+        </div>
+      </div>
+    </div><!-- Order Modal -->
+    <div id="order-modal"
+      class="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 hidden items-center justify-center p-4">
+      <div class="bg-white rounded-3xl shadow-2xl w-full max-w-md max-h-[90%] overflow-y-auto">
+        <div class="p-6">
+          <div class="flex items-center justify-between mb-6">
+            <h3 class="font-display text-2xl font-bold text-stone-800">Confirm Your Delivery</h3><button
+              onclick="closeOrderModal()" class="p-2 hover:bg-stone-100 rounded-full transition-colors">
+              <svg class="w-6 h-6 text-stone-500" fill="none" stroke="currentColor" viewbox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+              </svg></button>
+          </div>
+          <form id="order-form" onsubmit="submitOrderToWhatsApp(event)" class="space-y-4"><!-- Name Field -->
+            <div><label for="customer-name" class="block text-sm font-medium text-stone-700 mb-1">Full Name <span
+                  class="text-red-500">*</span></label> <input type="text" id="customer-name" name="name" required
+                placeholder="Enter your full name"
+                class="w-full px-4 py-3 border border-stone-300 rounded-xl focus:ring-2 focus:ring-amber-500 focus:border-amber-500 outline-none transition-all">
+              <p id="name-error" class="text-red-500 text-xs mt-1 hidden">Please enter your name</p>
+            </div><!-- Phone Field -->
+            <div><label for="customer-phone" class="block text-sm font-medium text-stone-700 mb-1">Phone Number <span
+                  class="text-red-500">*</span></label> <input type="tel" id="customer-phone" name="phone" required
+                placeholder="+94 77 123 4567"
+                class="w-full px-4 py-3 border border-stone-300 rounded-xl focus:ring-2 focus:ring-amber-500 focus:border-amber-500 outline-none transition-all">
+              <p id="phone-error" class="text-red-500 text-xs mt-1 hidden">Please enter your phone number</p>
+            </div><!-- Location Field -->
+            <div><label for="customer-location" class="block text-sm font-medium text-stone-700 mb-1">Google Maps
+                Location <span class="text-red-500">*</span></label> <input type="text" id="customer-location"
+                name="location" required placeholder="Paste your Google Maps link"
+                class="w-full px-4 py-3 border border-stone-300 rounded-xl focus:ring-2 focus:ring-amber-500 focus:border-amber-500 outline-none transition-all">
+              <p id="location-error" class="text-red-500 text-xs mt-1 hidden">Please provide your location</p>
+              <p class="text-stone-500 text-xs mt-1">Paste a Google Maps link or use the button below</p>
+            </div><!-- Get Location Button --> <button type="button" onclick="getCurrentLocation()"
+              class="w-full py-3 bg-stone-100 text-stone-700 rounded-xl font-medium hover:bg-stone-200 transition-colors flex items-center justify-center gap-2">
+              <svg class="w-5 h-5" fill="none" stroke="currentColor" viewbox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                  d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                  d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
+              </svg><span id="location-btn-text">Get My Current Location</span> </button>
+            <p id="location-status" class="text-xs text-center text-stone-500 hidden"></p><!-- Order Summary -->
+            <div class="bg-stone-50 rounded-xl p-4 mt-4">
+              <h4 class="font-semibold text-stone-700 mb-2">Order Summary</h4>
+              <div id="modal-order-summary" class="text-sm text-stone-600 max-h-32 overflow-y-auto">
+                <!-- Order summary will be rendered here -->
+              </div>
+              <div class="border-t border-stone-200 mt-2 pt-2 flex justify-between"><span
+                  class="font-semibold">Total:</span> <span id="modal-total" class="font-bold text-amber-600">LKR
+                  0</span>
+              </div>
+              <p class="text-[10px] text-stone-500 mt-2 leading-tight italic">
+                Delivery fee is added to the total and depends on your area (LKR 300–700). Please confirm the exact
+                delivery fee with our manager on WhatsApp.
+              </p>
+            </div><!-- Action Buttons -->
+            <div class="flex gap-3 pt-4"><button type="button" onclick="closeOrderModal()"
+                class="flex-1 py-3 bg-stone-200 text-stone-700 rounded-xl font-medium hover:bg-stone-300 transition-colors">
+                Cancel </button> <button type="submit"
+                class="flex-1 py-3 bg-green-600 text-white rounded-xl font-medium hover:bg-green-700 transition-colors flex items-center justify-center gap-2">
+                <svg class="w-5 h-5" fill="currentColor" viewbox="0 0 24 24">
+                  <path
+                    d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z" />
+                </svg> Send to WhatsApp </button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div><!-- Cart Overlay -->
+    <div id="cart-overlay" onclick="toggleCart()" class="fixed inset-0 bg-black/50 z-40 hidden"></div>
+  </div>
+  <script>
+    // Default configuration
+    const defaultConfig = {
+      cafe_name: 'Community',
+      hero_title: 'Delicious Food, Delivered Fresh',
+      hero_subtitle: 'Your favorite dishes — affordable, just as delicious, and delivered to your door',
+      whatsapp_number: '94767559563',
+      primary_color: '#6b7c59',
+      secondary_color: '#f5f1e8',
+      accent_color: '#8b9670',
+      text_color: '#3d4a2f',
+      background_color: '#faf9f5'
+    };
+
+    let config = { ...defaultConfig };
+
+    // Menu items data
+    const menuItems = [
+      // Breakfast
+      { id: 101, name: 'Early Bird', price: 2500, category: 'Breakfast', emoji: '🍳', image: './images/early bird .JPG', description: 'Omelette, ham, guacamole, fresh salad, hash browns, multigrain bread' },
+      { id: 102, name: 'Smoothie Bowl', price: 1700, category: 'Breakfast', emoji: '🥣', image: './images/smoothie bowl.JPG', description: 'Fresh fruits, coconut milk' },
+      { id: 103, name: 'Brioche with Shrimp', price: 2800, category: 'Breakfast', emoji: '🥐', image: './images/Brioche with shrimp .JPG', description: 'Buttery brioche, poached egg, hollandaise sauce, mixed salad' },
+      { id: 104, name: 'Brioche with Bacon', price: 2800, category: 'Breakfast', emoji: '🥓', image: './images/brioche with bacon .JPG', description: 'Buttery brioche, poached egg, hollandaise sauce, mixed salad' },
+      { id: 105, name: 'Morning Toast', price: 1900, category: 'Breakfast', emoji: '🍞', image: './images/morning toast.JPG', description: 'Multigrain bread, scrambled eggs, guacamole, fresh tomato salsa' },
+      { id: 106, name: 'Syrniki', price: 2300, category: 'Breakfast', emoji: '🥞', image: './images/syrniki.JPG', description: 'Homemade syrniki, vanilla cream, coconut chips' },
+      { id: 107, name: 'Hash Browns with Tuna Rillettes', price: 2400, category: 'Breakfast', emoji: '🥔', image: './images/Hashbrowns with tuna rillettes.JPG', description: 'Homemade hash browns, tuna rillettes, fresh salad' },
+      { id: 108, name: 'Hash Browns with Poached Egg', price: 2400, category: 'Breakfast', emoji: '🥚', image: './images/Hash browns with poached egg & hollandaise.JPG', description: 'Homemade hash browns, poached egg, hollandaise sauce, fresh salad' },
+      { id: 109, name: 'Homemade Granola', price: 1800, category: 'Breakfast', emoji: '🧉', image: './images/Homemade granola.JPG', description: 'Homemade granola, caramelized nuts, creamy yogurt' },
+
+      // Lunch/Dinner
+      { id: 201, name: 'Green Salad', price: 1900, category: 'Lunch/Dinner', emoji: '🥗', image: './images/green salad.JPG', description: 'Mix of fresh vegetables, salad leaves, coconut chips, peanut dressing' },
+      { id: 202, name: 'Tuna Sandwich', price: 2200, category: 'Lunch/Dinner', emoji: '🥪', image: './images/Tuna sandwich .JPG', description: 'Tender tuna rillettes, egg, mixed salad, pickles, multigrain bread' },
+      { id: 203, name: 'Chicken Sandwich', price: 2200, category: 'Lunch/Dinner', emoji: '🥪', image: './images/Chicken sandwich .JPG', description: 'Chicken, coleslaw, Caesar sauce' },
+      { id: 204, name: 'Meatballs with Mashed Potatoes', price: 2800, category: 'Lunch/Dinner', emoji: '🍲', image: './images/Meaballs with mashed potatoes.JPG', description: 'Beef meatballs, creamy sauce, fried onions, mashed potatoes, pickles' },
+      { id: 205, name: 'Chicken Wok', price: 2000, category: 'Lunch/Dinner', emoji: '🍜', image: './images/Wok chicken .JPG', description: 'Stir-fried noodles with chicken in Asian sauce' },
+      { id: 206, name: 'Shrimp Wok', price: 2000, category: 'Lunch/Dinner', emoji: '🍤', image: './images/Wok shrimp .JPG', description: 'Stir-fried noodles with shrimp in Asian sauce' },
+      { id: 207, name: 'Vegetable Wok', price: 2000, category: 'Lunch/Dinner', emoji: '🥬', description: 'Stir-fried noodles with vegetables in Asian sauce' },
+      { id: 208, name: 'Chicken Cutlet with Mashed Potatoes', price: 2700, category: 'Lunch/Dinner', emoji: '🍖', image: './images/Chicken cutlet with mashed potatoes .JPG', description: 'Served with fresh salad and fried onions' },
+      { id: 209, name: 'Chicken Bowl', price: 2200, category: 'Lunch/Dinner', emoji: '🍚', image: './images/Chicken bowl.JPG', description: 'Chicken breast, rice, fresh vegetables, corn, Asian sauce' },
+      { id: 210, name: 'Tuna Bowl', price: 2200, category: 'Lunch/Dinner', emoji: '🐟', description: 'Rice, tuna or shrimps, mango, avocado, cucumber, lettuce, purple cabbage, special sauce, sesame' },
+      { id: 211, name: 'Chicken Burger', price: 2650, category: 'Lunch/Dinner', emoji: '🍔', description: 'Chicken, cheese, cucumbers, tomatoes, lettuce, mayonnaise, tomato sauce and onion' },
+      { id: 212, name: 'Beef Burger', price: 2800, category: 'Lunch/Dinner', emoji: '🍔', description: 'Beef, cheese, cucumbers, tomatoes, lettuce, mayonnaise, tomato sauce and onion' },
+
+      // Desserts
+      { id: 301, name: 'Napoleon Cake', price: 1400, category: 'Desserts', emoji: '🍰', image: './images/Napoleon.JPG', description: 'Thin pastry layers soaked in custard cream' },
+      { id: 302, name: 'Coconut Crush', price: 1200, category: 'Desserts', emoji: '🥥', image: './images/Coconut crush.jpg', description: 'Cookie base, coconut cream, caramelized bananas, chocolate crumbs' },
+      { id: 303, name: 'Brownie', price: 1300, category: 'Desserts', emoji: '🍫', image: './images/Brownie.JPG', description: 'Classic brownie with a scoop of ice cream' },
+
+      // Drinks
+      { id: 401, name: 'Strawberry Lemonade', price: 900, category: 'Drinks', emoji: '🍓', description: 'Refreshing strawberry lemonade' },
+      { id: 402, name: 'Mango Passion Fruit Lemonade', price: 900, category: 'Drinks', emoji: '🥭', description: 'Tropical mango and passion fruit blend' },
+      { id: 403, name: 'Vanilla Milkshake', price: 1200, category: 'Drinks', emoji: '🥛', description: 'Classic vanilla milkshake' },
+      { id: 404, name: 'Chocolate Milkshake', price: 1200, category: 'Drinks', emoji: '🥤', description: 'Rich chocolate milkshake' },
+      { id: 405, name: 'Iced Cocoa', price: 1200, category: 'Drinks', emoji: '🍫', description: 'Chilled cocoa drink' },
+      { id: 406, name: 'Iced Tea', price: 900, category: 'Drinks', emoji: '🧊', description: 'Chilled tea refreshment' },
+      { id: 407, name: 'Espresso Tonic', price: 1200, category: 'Drinks', emoji: '☕', description: 'Espresso with tonic water' },
+      { id: 408, name: 'Pomegranate Espresso', price: 1200, category: 'Drinks', emoji: '🍷', description: 'Espresso with pomegranate juice' },
+      { id: 409, name: 'Bumble Coffee', price: 1200, category: 'Drinks', emoji: '🐝', description: 'Orange juice and espresso layers' }
+    ];
+
+    // Cart state
+    let cart = [];
+
+
+    // Get ordered categories specifically
+    const categories = ['Breakfast', 'Lunch/Dinner', 'Desserts', 'Drinks'];
+
+    // Render category buttons (Scroll Links)
+    function renderCategories() {
+      const container = document.getElementById('category-filter');
+
+      const allBtn = `
+        <button onclick="scrollToCategory('menu')" 
+          class="category-btn px-4 py-2 rounded-full text-sm font-medium bg-stone-100 text-stone-600 hover:bg-stone-200 transition-all">
+          All
+        </button>`;
+
+      const catBtns = categories.map(cat => {
+        const sectionId = 'section-' + cat.toLowerCase().replace('/', '-');
+        return `
+        <button 
+          onclick="scrollToCategory('${sectionId}')" 
+          class="category-btn px-4 py-2 rounded-full text-sm font-medium bg-stone-100 text-stone-600 hover:bg-stone-200 transition-all"
+        >
+          ${cat}
+        </button>
+      `}).join('');
+
+      container.innerHTML = allBtn + catBtns;
+    }
+
+    // Scroll to category
+    function scrollToCategory(id) {
+      const element = document.getElementById(id);
+      if (element) {
+        element.scrollIntoView({ behavior: 'smooth' });
+      }
+    }
+
+
+
+    // Render menu items (Scrolling Sections)
+    function renderMenu() {
+      const container = document.getElementById('menu-grid');
+      // Remove grid classes from main container, use flex col
+      container.className = "flex flex-col gap-12";
+
+      const sectionsHtml = categories.map(category => {
+        const categoryItems = menuItems.filter(item => item.category === category);
+        const sectionId = 'section-' + category.toLowerCase().replace('/', '-');
+
+        return `
+        <section id="${sectionId}" class="scroll-mt-32">
+          <h3 class="font-display text-2xl font-bold text-stone-800 mb-6 border-b border-stone-200 pb-2">${category}</h3>
+          <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+            ${categoryItems.map((item, index) => {
+          const cartItem = cart.find(i => i.id === item.id);
+          const quantity = cartItem ? cartItem.quantity : 0;
+
+          return `
+              <div class="menu-card bg-white rounded-2xl shadow-sm border border-stone-100 overflow-hidden transition-all duration-300 hover:shadow-lg">
+                ${item.image ? `
+                <div class="h-48 w-full overflow-hidden">
+                  <img src="${item.image}" alt="${item.name}" class="w-full h-full object-cover">
+                </div>
+                ` : `
+                <div class="aspect-video bg-gradient-to-br from-amber-50 to-stone-100 flex items-center justify-center">
+                  <span class="text-6xl">${item.emoji}</span>
+                </div>
+                `}
+                <div class="p-4">
+                  <div class="flex justify-between items-start mb-2">
+                    <h3 class="font-display font-semibold text-stone-800">${item.name}</h3>
+                  </div>
+                  <p class="text-sm text-stone-500 mb-3">${item.description}</p>
+                  <div class="flex items-center justify-between">
+                    <span class="font-display text-lg font-bold text-amber-600">LKR ${item.price.toLocaleString()}</span>
+                    ${quantity > 0 ? `
+                    <div class="flex items-center gap-3 bg-stone-100 rounded-full border border-stone-200 p-1">
+                      <button onclick="updateQuantity(${item.id}, -1); event.stopPropagation()" class="w-8 h-8 bg-white rounded-full border border-stone-200 flex items-center justify-center hover:bg-stone-50 transition-colors">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 12H4"></path></svg>
+                      </button>
+                      <span class="font-medium text-sm w-4 text-center">${quantity}</span>
+                      <button onclick="updateQuantity(${item.id}, 1); event.stopPropagation()" class="w-8 h-8 bg-white rounded-full border border-stone-200 flex items-center justify-center hover:bg-stone-50 transition-colors">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path></svg>
+                      </button>
+                    </div>
+                    ` : `
+                    <button 
+                      onclick="addToCart(${item.id}); event.stopPropagation()" 
+                      class="px-4 py-2 bg-stone-800 text-white rounded-lg text-sm font-medium hover:bg-stone-700 transition-colors flex items-center gap-1"
+                    >
+                      <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
+                      </svg>
+                      Add
+                    </button>
+                    `}
+                  </div>
+                </div>
+              </div>
+              `}).join('')}
+          </div>
+        </section>
+        `;
+      }).join('');
+
+      container.innerHTML = sectionsHtml;
+    }
+
+    // Add to cart
+    function addToCart(itemId) {
+      const item = menuItems.find(i => i.id === itemId);
+      const existingItem = cart.find(i => i.id === itemId);
+
+      if (existingItem) {
+        existingItem.quantity++;
+      } else {
+        cart.push({ ...item, quantity: 1 });
+      }
+
+      updateCart();
+      renderMenu(); // Re-render to show stepper
+
+      // Bounce animation on cart icon
+      const cartCount = document.getElementById('cart-count');
+      cartCount.classList.add('cart-bounce');
+      setTimeout(() => cartCount.classList.remove('cart-bounce'), 300);
+    }
+
+    // Remove from cart
+    function removeFromCart(itemId) {
+      cart = cart.filter(item => item.id !== itemId);
+      updateCart();
+      renderMenu(); // Re-render to reset button
+    }
+
+    // Update quantity
+    function updateQuantity(itemId, delta) {
+      const item = cart.find(i => i.id === itemId);
+      if (item) {
+        item.quantity += delta;
+        if (item.quantity <= 0) {
+          removeFromCart(itemId);
+        } else {
+          updateCart();
+        }
+        renderMenu(); // Re-render to update stepper
+      }
+    }
+
+    // Update cart display
+    function updateCart() {
+      const cartItems = document.getElementById('cart-items');
+      const cartCount = document.getElementById('cart-count');
+      const cartTotal = document.getElementById('cart-total');
+
+      const totalItems = cart.reduce((sum, item) => sum + item.quantity, 0);
+      const totalPrice = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+
+      cartCount.textContent = totalItems;
+      cartCount.classList.toggle('hidden', totalItems === 0);
+      cartTotal.textContent = `LKR ${totalPrice.toLocaleString()}`;
+
+      if (cart.length === 0) {
+        cartItems.innerHTML = `
+          <div class="h-full flex flex-col items-center justify-center text-stone-400">
+            <span class="text-6xl mb-4">🛒</span>
+            <p>Your cart is empty</p>
+            <p class="text-sm">Add some delicious items!</p>
+          </div>
+        `;
+      } else {
+        cartItems.innerHTML = cart.map(item => `
+          <div class="flex items-center gap-3 p-3 bg-stone-50 rounded-xl mb-3">
+            <span class="text-3xl">${item.emoji}</span>
+            <div class="flex-1">
+              <h4 class="font-medium text-sm">${item.name}</h4>
+              <p class="text-amber-600 font-semibold">LKR ${(item.price * item.quantity).toLocaleString()}</p>
+            </div>
+            <div class="flex items-center gap-2">
+              <button onclick="updateQuantity(${item.id}, -1)" class="w-8 h-8 bg-white rounded-full border border-stone-200 flex items-center justify-center hover:bg-stone-100 transition-colors">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 12H4"></path>
+                </svg>
+              </button>
+              <span class="w-8 text-center font-medium">${item.quantity}</span>
+              <button onclick="updateQuantity(${item.id}, 1)" class="w-8 h-8 bg-white rounded-full border border-stone-200 flex items-center justify-center hover:bg-stone-100 transition-colors">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
+                </svg>
+              </button>
+            </div>
+          </div>
+        `).join('');
+      }
+    }
+
+    // Toggle cart sidebar
+    function toggleCart() {
+      const sidebar = document.getElementById('cart-sidebar');
+      const overlay = document.getElementById('cart-overlay');
+      sidebar.classList.toggle('translate-x-full');
+      overlay.classList.toggle('hidden');
+    }
+
+    // Open order modal
+    function openOrderModal() {
+      const modal = document.getElementById('order-modal');
+      modal.classList.remove('hidden');
+      modal.classList.add('flex');
+
+      // Close cart sidebar if open
+      const sidebar = document.getElementById('cart-sidebar');
+      const overlay = document.getElementById('cart-overlay');
+      if (!sidebar.classList.contains('translate-x-full')) {
+        sidebar.classList.add('translate-x-full');
+        overlay.classList.add('hidden');
+      }
+
+      // Update order summary in modal
+      updateModalSummary();
+
+      // Clear previous errors
+      clearFormErrors();
+    }
+
+    // Close order modal
+    function closeOrderModal() {
+      const modal = document.getElementById('order-modal');
+      modal.classList.add('hidden');
+      modal.classList.remove('flex');
+    }
+
+    // Update modal order summary
+    function updateModalSummary() {
+      const summaryContainer = document.getElementById('modal-order-summary');
+      const modalTotal = document.getElementById('modal-total');
+      const totalPrice = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+
+      if (cart.length === 0) {
+        summaryContainer.innerHTML = '<p class="text-stone-500 italic">No items in cart - you can still send a message</p>';
+      } else {
+        summaryContainer.innerHTML = cart.map(item => `
+          <div class="flex justify-between py-1">
+            <span>${item.emoji} ${item.name} x${item.quantity}</span>
+            <span>LKR ${(item.price * item.quantity).toLocaleString()}</span>
+          </div>
+        `).join('');
+      }
+
+      modalTotal.textContent = `LKR ${totalPrice.toLocaleString()}`;
+    }
+
+    // Clear form errors
+    function clearFormErrors() {
+      document.getElementById('name-error').classList.add('hidden');
+      document.getElementById('phone-error').classList.add('hidden');
+      document.getElementById('location-error').classList.add('hidden');
+    }
+
+    // Validate form
+    function validateForm() {
+      let isValid = true;
+      clearFormErrors();
+
+      const name = document.getElementById('customer-name').value.trim();
+      const phone = document.getElementById('customer-phone').value.trim();
+      const location = document.getElementById('customer-location').value.trim();
+
+      if (!name) {
+        document.getElementById('name-error').classList.remove('hidden');
+        isValid = false;
+      }
+
+      if (!phone) {
+        document.getElementById('phone-error').classList.remove('hidden');
+        isValid = false;
+      }
+
+      if (!location) {
+        document.getElementById('location-error').classList.remove('hidden');
+        isValid = false;
+      }
+
+      return isValid;
+    }
+
+    // Get current location
+    function getCurrentLocation() {
+      const btnText = document.getElementById('location-btn-text');
+      const statusText = document.getElementById('location-status');
+      const locationInput = document.getElementById('customer-location');
+
+      if (!navigator.geolocation) {
+        statusText.textContent = 'Geolocation is not supported by your browser';
+        statusText.classList.remove('hidden');
+        statusText.classList.add('text-red-500');
+        return;
+      }
+
+      btnText.textContent = 'Getting location...';
+      statusText.classList.add('hidden');
+
+      navigator.geolocation.getCurrentPosition(
+        (position) => {
+          const lat = position.coords.latitude;
+          const lng = position.coords.longitude;
+          const mapsLink = `https://maps.google.com/?q=${lat},${lng}`;
+          locationInput.value = mapsLink;
+          btnText.textContent = 'Location found!';
+          statusText.textContent = 'Google Maps link has been filled in';
+          statusText.classList.remove('hidden', 'text-red-500');
+          statusText.classList.add('text-green-600');
+
+          setTimeout(() => {
+            btnText.textContent = 'Get My Current Location';
+          }, 2000);
+        },
+        (error) => {
+          btnText.textContent = 'Get My Current Location';
+          statusText.classList.remove('hidden', 'text-green-600');
+          statusText.classList.add('text-red-500');
+
+          switch (error.code) {
+            case error.PERMISSION_DENIED:
+              statusText.textContent = 'Location permission denied. Please paste Google Maps link manually.';
+              break;
+            case error.POSITION_UNAVAILABLE:
+              statusText.textContent = 'Location unavailable. Please paste Google Maps link manually.';
+              break;
+            case error.TIMEOUT:
+              statusText.textContent = 'Location request timed out. Please try again or paste link manually.';
+              break;
+            default:
+              statusText.textContent = 'Unable to get location. Please paste Google Maps link manually.';
+          }
+        },
+        {
+          enableHighAccuracy: true,
+          timeout: 10000,
+          maximumAge: 0
+        }
+      );
+    }
+
+    // Submit order to WhatsApp
+    function submitOrderToWhatsApp(event) {
+      if (event) event.preventDefault();
+
+      if (!validateForm()) {
+        return;
+      }
+
+      const name = document.getElementById('customer-name').value.trim();
+      const phone = document.getElementById('customer-phone').value.trim();
+      const location = document.getElementById('customer-location').value.trim();
+
+      const whatsappNumber = "94767559563";
+
+      let message = `🍽️ *New Order from Community Website*\n\n`;
+      message += `*Customer Info:*\n`;
+      message += `• Name: ${name}\n`;
+      message += `• Phone: ${phone}\n`;
+      message += `• Location: ${location}\n\n`;
+
+      if (cart.length > 0) {
+        message += `*Order Details:*\n`;
+        cart.forEach(item => {
+          message += `• ${item.emoji} ${item.name} x${item.quantity} - LKR ${(item.price * item.quantity).toLocaleString()}\n`;
+        });
+        const total = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+        message += `\n*Total: LKR ${total.toLocaleString()}*\n`;
+      } else {
+        message += `_I'd like to place an order._\n`;
+      }
+
+      message += `\n_Please confirm if delivery is available to my area._`;
+
+      const encodedMessage = encodeURIComponent(message);
+      const whatsappUrl = `https://wa.me/${whatsappNumber}?text=${encodedMessage}`;
+
+      // Close modal
+      closeOrderModal();
+
+      // Open WhatsApp
+      window.open(whatsappUrl, '_blank');
+    }
+
+    // Apply configuration to UI
+    function applyConfig(cfg) {
+      // Update text content
+      document.getElementById('nav-logo').textContent = cfg.cafe_name || defaultConfig.cafe_name;
+      document.getElementById('footer-name').textContent = cfg.cafe_name || defaultConfig.cafe_name;
+
+      const heroTitle = cfg.hero_title || defaultConfig.hero_title;
+      document.getElementById('hero-title').innerHTML = heroTitle.replace(',', ',<br>');
+      document.getElementById('hero-subtitle').textContent = cfg.hero_subtitle || defaultConfig.hero_subtitle;
+
+      // Format WhatsApp number for display
+      const whatsappNum = cfg.whatsapp_number || defaultConfig.whatsapp_number;
+      const formattedNum = whatsappNum.replace(/(\d{2})(\d{2})(\d{3})(\d{4})/, '+$1 $2 $3 $4');
+      document.getElementById('contact-whatsapp').textContent = formattedNum;
+    }
+
+    // Initialize Element SDK (REMOVED: window.elementSdk logic as it won't exist locally)
+
+    // Initialize on load
+    renderCategories();
+    renderMenu();
+    updateCart();
+    applyConfig(config);
+
+    // Close modal on escape key
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') {
+        closeOrderModal();
+      }
+    });
+
+    // Close modal on overlay click
+    document.getElementById('order-modal').addEventListener('click', (e) => {
+      if (e.target === document.getElementById('order-modal')) {
+        closeOrderModal();
+      }
+    });
+
+    // Sticky Category Bar logic (Intersection Observer)
+    const filterBar = document.getElementById('category-filter');
+    const sentinel = document.getElementById('menu-sentinel');
+
+    if (filterBar && sentinel) {
+      const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+          // When sentinel is NOT intersecting (scrolled past), bar is stuck
+          if (!entry.isIntersecting) {
+            filterBar.classList.add('stuck');
+          } else {
+            filterBar.classList.remove('stuck');
+          }
+        });
+      }, {
+        rootMargin: '-65px 0px 0px 0px', // Header height offset
+        threshold: 0
+      });
+
+      observer.observe(sentinel);
+    }
+  </script>
+</body>
+
+</html>
