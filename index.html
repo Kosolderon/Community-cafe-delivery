@@ -12,6 +12,25 @@
   <link
     href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700&amp;family=Inter:wght@300;400;500;600&amp;display=swap"
     rel="stylesheet">
+  <!-- Meta Pixel Code -->
+  <script>
+    !function (f, b, e, v, n, t, s) {
+      if (f.fbq) return; n = f.fbq = function () {
+        n.callMethod ?
+          n.callMethod.apply(n, arguments) : n.queue.push(arguments)
+      };
+      if (!f._fbq) f._fbq = n; n.push = n; n.loaded = !0; n.version = '2.0';
+      n.queue = []; t = b.createElement(e); t.async = !0;
+      t.src = v; s = b.getElementsByTagName(e)[0];
+      s.parentNode.insertBefore(t, s)
+    }(window, document, 'script',
+      'https://connect.facebook.net/en_US/fbevents.js');
+    fbq('init', '916738080730391');
+    fbq('track', 'PageView');
+  </script>
+  <noscript><img height="1" width="1" style="display:none"
+      src="https://www.facebook.com/tr?id=916738080730391&ev=PageView&noscript=1" /></noscript>
+  <!-- End Meta Pixel Code -->
   <style>
     body {
       box-sizing: border-box;
@@ -291,7 +310,7 @@
                 class="text-xl">💬</span>
             </div>
             <h3 class="font-semibold mb-2">WhatsApp</h3>
-            <p id="contact-whatsapp" class="text-stone-600">+94 76 755 9563</p>
+            <p id="contact-whatsapp" class="text-stone-600">+94 76 754 8872</p>
           </div>
           <div class="text-center p-6 bg-stone-50 rounded-2xl">
             <div class="w-12 h-12 bg-amber-100 rounded-full flex items-center justify-center mx-auto mb-4"><span
@@ -418,7 +437,7 @@
       cafe_name: 'Community',
       hero_title: 'Delicious Food, Delivered Fresh',
       hero_subtitle: 'Your favorite dishes — affordable, just as delicious, and delivered to your door',
-      whatsapp_number: '94767559563',
+      whatsapp_number: '94767548872',
       primary_color: '#6b7c59',
       secondary_color: '#f5f1e8',
       accent_color: '#8b9670',
@@ -451,9 +470,10 @@
       { id: 207, name: 'Vegetable Wok', price: 2000, category: 'Lunch/Dinner', emoji: '🥬', description: 'Stir-fried noodles with vegetables in Asian sauce' },
       { id: 208, name: 'Chicken Cutlet with Mashed Potatoes', price: 2700, category: 'Lunch/Dinner', emoji: '🍖', image: './images/Chicken cutlet with mashed potatoes .JPG', description: 'Served with fresh salad and fried onions' },
       { id: 209, name: 'Chicken Bowl', price: 2200, category: 'Lunch/Dinner', emoji: '🍚', image: './images/Chicken bowl.JPG', description: 'Chicken breast, rice, fresh vegetables, corn, Asian sauce' },
-      { id: 210, name: 'Tuna Bowl', price: 2200, category: 'Lunch/Dinner', emoji: '🐟', description: 'Rice, tuna or shrimps, mango, avocado, cucumber, lettuce, purple cabbage, special sauce, sesame' },
-      { id: 211, name: 'Chicken Burger', price: 2650, category: 'Lunch/Dinner', emoji: '🍔', description: 'Chicken, cheese, cucumbers, tomatoes, lettuce, mayonnaise, tomato sauce and onion' },
-      { id: 212, name: 'Beef Burger', price: 2800, category: 'Lunch/Dinner', emoji: '🍔', description: 'Beef, cheese, cucumbers, tomatoes, lettuce, mayonnaise, tomato sauce and onion' },
+      { id: 210, name: 'Tuna Bowl', price: 2200, category: 'Lunch/Dinner', emoji: '🐟', description: 'Rice, mango, avocado, cucumber, lettuce, purple cabbage, special sauce, sesame' },
+      { id: 213, name: 'Shrimp Bowl', price: 2200, category: 'Lunch/Dinner', emoji: '🍤', image: './images/Shrimp Bowl.jpg.jpeg', description: 'Rice, mango, avocado, cucumber, lettuce, purple cabbage, special sauce, sesame' },
+      { id: 211, name: 'Chicken Burger', price: 2650, category: 'Lunch/Dinner', emoji: '🍔', image: './images/Chicken Burger.jpg.jpeg', description: 'Chicken, cheese, cucumbers, tomatoes, lettuce, mayonnaise, tomato sauce and onion' },
+      { id: 212, name: 'Beef Burger', price: 2800, category: 'Lunch/Dinner', emoji: '🍔', image: './images/Beef Burger.jpg.jpeg', description: 'Beef, cheese, cucumbers, tomatoes, lettuce, mayonnaise, tomato sauce and onion' },
 
       // Desserts
       { id: 301, name: 'Napoleon Cake', price: 1400, category: 'Desserts', emoji: '🍰', image: './images/Napoleon.JPG', description: 'Thin pastry layers soaked in custard cream' },
@@ -818,6 +838,34 @@
       );
     }
 
+    /**
+     * Helper to handle WhatsApp redirection with mobile fallback
+     * @param {string} phone - Target phone number
+     * @param {string} message - Raw message text (not yet encoded)
+     */
+    function redirectToWhatsApp(phone, message) {
+      // Sanitize phone: keep only digits
+      const sanitizedPhone = phone.replace(/\D/g, '');
+      const encodedMessage = encodeURIComponent(message);
+
+      const isMobile = /Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
+
+      if (isMobile) {
+        // 1. Try opening via deep link
+        window.location.href = `whatsapp://send?phone=${sanitizedPhone}&text=${encodedMessage}`;
+
+        // 2. Mobile Fallback: if user is still on the page after 700ms, redirect to wa.me
+        setTimeout(() => {
+          if (document.visibilityState === 'visible') {
+            window.location.href = `https://wa.me/${sanitizedPhone}?text=${encodedMessage}`;
+          }
+        }, 700);
+      } else {
+        // Desktop: directly go to wa.me in the same tab
+        window.location.href = `https://wa.me/${sanitizedPhone}?text=${encodedMessage}`;
+      }
+    }
+
     // Submit order to WhatsApp
     function submitOrderToWhatsApp(event) {
       if (event) event.preventDefault();
@@ -830,7 +878,12 @@
       const phone = document.getElementById('customer-phone').value.trim();
       const location = document.getElementById('customer-location').value.trim();
 
-      const whatsappNumber = "94767559563";
+      const whatsappNumber = "94767548872";
+
+      // Track Facebook Pixel Lead event
+      if (typeof fbq === 'function') {
+        fbq('track', 'Lead');
+      }
 
       let message = `🍽️ *New Order from Community Website*\n\n`;
       message += `*Customer Info:*\n`;
@@ -851,14 +904,11 @@
 
       message += `\n_Please confirm if delivery is available to my area._`;
 
-      const encodedMessage = encodeURIComponent(message);
-      const whatsappUrl = `https://wa.me/${whatsappNumber}?text=${encodedMessage}`;
-
-      // Close modal
+      // Close modal before redirecting
       closeOrderModal();
 
-      // Open WhatsApp
-      window.open(whatsappUrl, '_blank');
+      // Trigger redirect via single helper function
+      redirectToWhatsApp(whatsappNumber, message);
     }
 
     // Apply configuration to UI
